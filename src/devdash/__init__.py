@@ -4,7 +4,7 @@ devdash - A terminal dashboard for developers
 Shows Git status, system stats, tasks, and Pomodoro timer in one unified interface.
 """
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 __author__ = "RainMaker033"
 __license__ = "MIT"
 
