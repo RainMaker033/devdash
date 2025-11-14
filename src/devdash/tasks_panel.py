@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Optional, List
 
 from textual.app import ComposeResult
-from textual.widgets import Static, Input
+from textual.widgets import Static
 from textual.containers import Container
 from textual.reactive import reactive
 
@@ -50,11 +50,9 @@ class TasksPanel(Container):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.content_widget: Optional[Static] = None
-        self.input_widget: Optional[Input] = None
         self.tasks: List[Task] = []
         self.selected_index: int = 0
         self.tasks_file = Path.cwd() / ".devdash_tasks.json"
-        self.adding_task = False
 
         # Filter and sort state
         self.current_filter_priority: Optional[str] = None
@@ -67,9 +65,6 @@ class TasksPanel(Container):
         yield Static("Tasks", classes="panel-title")
         self.content_widget = Static("", classes="panel-content")
         yield self.content_widget
-        self.input_widget = Input(placeholder="Enter task description...", classes="task-input")
-        self.input_widget.display = False
-        yield self.input_widget
 
     def on_mount(self) -> None:
         """Called when widget is mounted."""
@@ -193,11 +188,9 @@ class TasksPanel(Container):
         self.tasks_content = "\n".join(lines)
 
     def action_add_task(self) -> None:
-        """Show input to add a new task (quick mode)."""
-        if self.input_widget:
-            self.input_widget.display = True
-            self.input_widget.focus()
-            self.adding_task = True
+        """Open task editor modal to add a new task."""
+        next_id = max([t.id for t in self.tasks], default=0) + 1
+        self.app.push_screen(TaskEditModal(task_id=next_id), self.handle_edit_save)
 
     def action_edit_task(self) -> None:
         """Open full edit dialog for selected task."""
@@ -320,26 +313,3 @@ class TasksPanel(Container):
             # Silently fail - could show error notification in future
             pass
 
-    def on_input_submitted(self, event: Input.Submitted) -> None:
-        """Handle task input submission (quick add)."""
-        if self.adding_task and event.value.strip():
-            # Get next ID
-            next_id = max([task.id for task in self.tasks], default=0) + 1
-
-            # Create simple task (can be enhanced with edit later)
-            task = Task(
-                id=next_id,
-                text=event.value.strip()
-            )
-            self.tasks.append(task)
-            self.save_tasks()
-
-            # Reset input
-            if self.input_widget:
-                self.input_widget.value = ""
-                self.input_widget.display = False
-
-            self.adding_task = False
-            self.selected_index = len(self.tasks) - 1
-            self.refresh_display()
-            self.focus()
