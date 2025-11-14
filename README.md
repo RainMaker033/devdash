@@ -1,4 +1,4 @@
-# devdash
+# DevDash
 
 > A terminal dashboard for developers
 
@@ -6,7 +6,7 @@
 ![Python](https://img.shields.io/badge/python-3.9%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-**devdash** is a terminal dashboard that brings together the essential information you need while coding:
+**DevDash** is a terminal dashboard that brings together the essential information you need while coding:
 
 - **Git Status** - Current branch, changes, and recent commits at a glance
 - **System Stats** - CPU, RAM, and disk usage monitoring
@@ -47,7 +47,7 @@ Stop alt-tabbing between multiple terminal windows. Get everything in one unifie
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/devdash.git
+git clone https://github.com/RainMaker033/devdash.git
 cd devdash
 
 # Create virtual environment
@@ -86,7 +86,7 @@ The dashboard will automatically:
 
 | Key | Action |
 |-----|--------|
-| `q` or `Ctrl+C` | Quit devdash |
+| `q` or `Ctrl+C` | Quit DevDash |
 | `?` | Show help popup |
 | `r` | Refresh all panels |
 | **Tasks Panel** | |

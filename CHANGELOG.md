@@ -101,9 +101,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Project Links
 
-- **Homepage**: https://github.com/yourusername/devdash
-- **Issues**: https://github.com/yourusername/devdash/issues
-- **Releases**: https://github.com/yourusername/devdash/releases
+- **Homepage**: https://github.com/RainMaker033/devdash
+- **Issues**: https://github.com/RainMaker033/devdash/issues
+- **Releases**: https://github.com/RainMaker033/devdash/releases
 
 ---
 
@@ -113,5 +113,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 |---------|------|-------------|
 | 0.1.0 | 2025-11-13 | Initial release with all four panels |
 
-[Unreleased]: https://github.com/yourusername/devdash/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/yourusername/devdash/releases/tag/v0.1.0
+[Unreleased]: https://github.com/RainMaker033/devdash/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/RainMaker033/devdash/releases/tag/v0.1.0

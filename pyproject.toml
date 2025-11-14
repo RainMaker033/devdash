@@ -44,9 +44,9 @@ dev = [
 devdash = "devdash.main:cli"
 
 [project.urls]
-Homepage = "https://github.com/yourusername/devdash"
-Repository = "https://github.com/yourusername/devdash"
-Issues = "https://github.com/yourusername/devdash/issues"
+Homepage = "https://github.com/RainMaker033/devdash"
+Repository = "https://github.com/RainMaker033/devdash"
+Issues = "https://github.com/RainMaker033/devdash/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

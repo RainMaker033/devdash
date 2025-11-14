@@ -29,7 +29,7 @@ Be respectful, constructive, and professional. We're all here to build something
 1. **Fork and clone the repository**
 
 ```bash
-git clone https://github.com/yourusername/devdash.git
+git clone https://github.com/RainMaker033/devdash.git
 cd devdash
 ```
 
