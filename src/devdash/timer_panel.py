@@ -42,11 +42,8 @@ class TimerPanel(Container):
     }
     """
 
-    BINDINGS = [
-        ("f", "start_focus", "Focus"),
-        ("b", "start_break", "Break"),
-        ("s", "stop_timer", "Stop"),
-    ]
+    # Bindings are now handled at App level
+    # Keep action methods for delegation
 
     timer_content = reactive("")
 
@@ -90,8 +87,8 @@ class TimerPanel(Container):
 
 Ready to start
 
-[dim]Press 'f' for focus (25min)
-Press 'b' for break (5min)[/]
+[dim]Press 'Shift+F' for focus (25min)
+Press 'Shift+B' for break (5min)[/]
 """
         elif self.state == TimerState.FOCUS:
             time_str = self._format_time(self.remaining_seconds)
@@ -102,7 +99,7 @@ Press 'b' for break (5min)[/]
 
 {progress}
 
-[dim]Press 's' to stop[/]
+[dim]Press 'Shift+S' to stop[/]
 """
         elif self.state == TimerState.BREAK:
             time_str = self._format_time(self.remaining_seconds)
@@ -113,7 +110,7 @@ Press 'b' for break (5min)[/]
 
 {progress}
 
-[dim]Press 's' to stop[/]
+[dim]Press 'Shift+S' to stop[/]
 """
 
     def _create_progress_bar(self) -> str:

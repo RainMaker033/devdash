@@ -72,9 +72,9 @@ class HelpModal(ModalScreen):
   0           - Clear all filters
 
 [bold cyan]Timer Panel[/]
-  Ctrl+f      - Start focus session (25 minutes)
-  Ctrl+b      - Start break (5 minutes)
-  Ctrl+s      - Stop timer / return to idle
+  Shift+F     - Start focus session (25 minutes)
+  Shift+B     - Start break (5 minutes)
+  Shift+S     - Stop timer / return to idle
 
 [bold cyan]Task Features[/]
   • Priorities: 🔴 High, 🟡 Medium, 🟢 Low

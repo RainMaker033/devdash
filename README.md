@@ -112,9 +112,9 @@ The dashboard will automatically:
 | `3` | Filter to show only low priority |
 | `0` | Clear all filters |
 | **Timer Panel** | |
-| `Ctrl+f` | Start focus session (25min) |
-| `Ctrl+b` | Start break (5min) |
-| `Ctrl+s` | Stop timer / return to idle |
+| `Shift+F` | Start focus session (25min) |
+| `Shift+B` | Start break (5min) |
+| `Shift+S` | Stop timer / return to idle |
 
 ## Configuration
 

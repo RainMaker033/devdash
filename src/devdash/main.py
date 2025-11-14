@@ -71,10 +71,10 @@ class DevDashApp(App):
         ("2", "filter_medium", "Medium Priority"),
         ("3", "filter_low", "Low Priority"),
         ("0", "clear_filters", "Clear Filters"),
-        # Timer
-        ("ctrl+f", "timer_focus", "Focus"),
-        ("ctrl+b", "timer_break", "Break"),
-        ("ctrl+s", "timer_stop", "Stop"),
+        # Timer (use Shift+key to avoid conflicts)
+        ("F", "timer_focus", "Focus"),
+        ("B", "timer_break", "Break"),
+        ("S", "timer_stop", "Stop"),
     ]
 
     def compose(self) -> ComposeResult:

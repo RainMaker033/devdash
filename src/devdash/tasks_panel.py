@@ -42,22 +42,8 @@ class TasksPanel(Container):
     }
     """
 
-    BINDINGS = [
-        ("a", "add_task", "Add Task"),
-        ("e", "edit_task", "Edit Task"),
-        ("space", "toggle_task", "Toggle Done"),
-        ("d", "delete_task", "Delete Task"),
-        ("p", "quick_priority", "Set Priority"),
-        ("f", "toggle_filter", "Filter"),
-        ("s", "cycle_sort", "Sort"),
-        ("x", "export_tasks", "Export"),
-        ("up", "move_up", "Move Up"),
-        ("down", "move_down", "Move Down"),
-        ("1", "filter_high", "High Priority"),
-        ("2", "filter_medium", "Medium Priority"),
-        ("3", "filter_low", "Low Priority"),
-        ("0", "clear_filter", "All Tasks"),
-    ]
+    # Bindings are now handled at App level
+    # Keep action methods for delegation
 
     tasks_content = reactive("")
 
@@ -282,7 +268,7 @@ class TasksPanel(Container):
             self.selected_index += 1
             self.refresh_display()
 
-    def action_toggle_filter(self) -> None:
+    def action_filter_tasks(self) -> None:
         """Toggle show/hide completed tasks."""
         self.show_done = not self.show_done
         self.refresh_display()
@@ -302,14 +288,14 @@ class TasksPanel(Container):
         self.current_filter_priority = "low"
         self.refresh_display()
 
-    def action_clear_filter(self) -> None:
+    def action_clear_filters(self) -> None:
         """Clear all filters."""
         self.current_filter_priority = None
         self.current_filter_category = None
         self.show_done = True
         self.refresh_display()
 
-    def action_cycle_sort(self) -> None:
+    def action_sort_tasks(self) -> None:
         """Cycle through sort options."""
         sort_options = ["created", "priority", "due_date", "text"]
         current_idx = sort_options.index(self.sort_by)
