@@ -1,0 +1,76 @@
+# DevDash Configuration File
+# See https://github.com/RainMaker033/devdash for full documentation
+
+[general]
+theme = "default"  # Options: "default", "dark", "light"
+layout = "default"
+update_header = true
+
+[git]
+enabled = true
+refresh_interval = 5  # seconds
+max_commits = 3       # number of recent commits to display
+show_staged = true
+show_modified = true
+show_untracked = true
+
+[system]
+enabled = true
+refresh_interval = 1  # seconds
+show_cpu = true
+show_ram = true
+show_disk = true
+show_uptime = true
+show_load_avg = true  # Linux/Mac only
+
+# Thresholds for color coding (percentage, 0-100)
+cpu_warning_threshold = 60.0
+cpu_critical_threshold = 80.0
+ram_warning_threshold = 60.0
+ram_critical_threshold = 80.0
+disk_warning_threshold = 60.0
+disk_critical_threshold = 80.0
+
+# Progress bar configuration
+progress_bar_width = 10
+progress_bar_style = "blocks"  # Options: "blocks", "bars", "dots"
+
+[tasks]
+enabled = true
+file_path = ".devdash_tasks.json"  # Relative to current directory
+default_sort = "created"  # Options: "created", "priority", "due_date", "text"
+show_completed = true
+default_priority_filter = null  # null, "high", "medium", "low"
+default_category_filter = null  # null or category name
+max_visible_tasks = 20
+truncate_length = 40
+show_categories = true
+show_due_dates = true
+show_priority_emoji = true
+due_soon_days = 3  # Days threshold for "due soon" indicator
+export_format = "grouped"  # Options: "grouped", "simple", "detailed"
+
+[timer]
+enabled = true
+focus_duration = 25  # minutes
+break_duration = 5   # minutes
+long_break_duration = 15  # minutes (future feature)
+auto_start_break = false
+notification_enabled = false  # Future feature
+notification_sound = "bell"   # Options: "bell", "chime", "silent"
+show_progress_bar = true
+progress_bar_width = 20
+
+[ui]
+border_style = "solid"  # Options: "solid", "double", "rounded", "heavy", "none"
+panel_padding = 1
+show_footer = true
+show_header = true
+compact_view = false
+
+[keybindings]
+# Future feature: custom keybindings
+quit = "q"
+help = "?"
+refresh = "r"
+

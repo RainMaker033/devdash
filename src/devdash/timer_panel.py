@@ -11,6 +11,8 @@ from textual.widgets import Static
 from textual.containers import Container
 from textual.reactive import reactive
 
+from devdash.config.schema import TimerConfig
+
 
 class TimerState(Enum):
     """Timer states."""
@@ -47,17 +49,23 @@ class TimerPanel(Container):
 
     timer_content = reactive("")
 
-    # Timer durations in seconds
-    FOCUS_DURATION = 25 * 60  # 25 minutes
-    BREAK_DURATION = 5 * 60   # 5 minutes
+    def __init__(self, config: Optional[TimerConfig] = None, *args, **kwargs):
+        """Initialize Timer panel.
 
-    def __init__(self, *args, **kwargs):
+        Args:
+            config: Timer panel configuration. If None, uses defaults.
+        """
         super().__init__(*args, **kwargs)
+        self.config = config or TimerConfig()
         self.content_widget: Optional[Static] = None
         self.state: TimerState = TimerState.IDLE
         self.remaining_seconds: int = 0
         self.end_time: float = 0
         self.update_timer_handle = None
+
+        # Convert minutes to seconds for internal use
+        self.focus_duration = self.config.focus_duration * 60
+        self.break_duration = self.config.break_duration * 60
 
     def compose(self) -> ComposeResult:
         """Create child widgets."""
@@ -67,6 +75,9 @@ class TimerPanel(Container):
 
     def on_mount(self) -> None:
         """Called when widget is mounted."""
+        if not self.config.enabled:
+            self.timer_content = "[dim]Timer panel disabled in configuration[/]"
+            return
         self.refresh_display()
 
     def watch_timer_content(self, new_content: str) -> None:
@@ -83,12 +94,12 @@ class TimerPanel(Container):
     def refresh_display(self) -> None:
         """Refresh the timer display."""
         if self.state == TimerState.IDLE:
-            self.timer_content = """[bold cyan]IDLE[/]
+            self.timer_content = f"""[bold cyan]IDLE[/]
 
 Ready to start
 
-[dim]Press 'Shift+F' for focus (25min)
-Press 'Shift+B' for break (5min)[/]
+[dim]Press 'Shift+F' for focus ({self.config.focus_duration}min)
+Press 'Shift+B' for break ({self.config.break_duration}min)[/]
 """
         elif self.state == TimerState.FOCUS:
             time_str = self._format_time(self.remaining_seconds)
@@ -116,14 +127,17 @@ Press 'Shift+B' for break (5min)[/]
     def _create_progress_bar(self) -> str:
         """Create a visual progress bar for the timer."""
         if self.state == TimerState.FOCUS:
-            total = self.FOCUS_DURATION
+            total = self.focus_duration
         elif self.state == TimerState.BREAK:
-            total = self.BREAK_DURATION
+            total = self.break_duration
         else:
             return ""
 
+        if not self.config.show_progress_bar:
+            return ""
+
         percentage = (self.remaining_seconds / total) * 100
-        width = 20
+        width = self.config.progress_bar_width
         filled = int((percentage / 100) * width)
         empty = width - filled
 
@@ -145,8 +159,8 @@ Press 'Shift+B' for break (5min)[/]
     def action_start_focus(self) -> None:
         """Start a focus session."""
         self.state = TimerState.FOCUS
-        self.remaining_seconds = self.FOCUS_DURATION
-        self.end_time = time.time() + self.FOCUS_DURATION
+        self.remaining_seconds = self.focus_duration
+        self.end_time = time.time() + self.focus_duration
 
         # Start periodic updates
         if self.update_timer_handle:
@@ -158,8 +172,8 @@ Press 'Shift+B' for break (5min)[/]
     def action_start_break(self) -> None:
         """Start a break session."""
         self.state = TimerState.BREAK
-        self.remaining_seconds = self.BREAK_DURATION
-        self.end_time = time.time() + self.BREAK_DURATION
+        self.remaining_seconds = self.break_duration
+        self.end_time = time.time() + self.break_duration
 
         # Start periodic updates
         if self.update_timer_handle:
@@ -177,4 +191,24 @@ Press 'Shift+B' for break (5min)[/]
         self.state = TimerState.IDLE
         self.remaining_seconds = 0
         self.end_time = 0
+        self.refresh_display()
+
+    def stop_timer(self) -> None:
+        """Stop timer (called when countdown reaches zero)."""
+        self.action_stop_timer()
+        # TODO: Implement notification based on config.notification_enabled
+
+    def update_config(self, new_config: TimerConfig) -> None:
+        """Update the timer configuration and apply changes.
+
+        Args:
+            new_config: New timer configuration
+        """
+        self.config = new_config
+
+        # Update durations (convert minutes to seconds)
+        self.focus_duration = self.config.focus_duration * 60
+        self.break_duration = self.config.break_duration * 60
+
+        # Refresh display to show new durations
         self.refresh_display()

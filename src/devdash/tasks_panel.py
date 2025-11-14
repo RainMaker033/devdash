@@ -14,6 +14,7 @@ from textual.reactive import reactive
 from devdash.task_model import Task, migrate_task_list, sort_tasks, filter_tasks
 from devdash.task_edit_modal import TaskEditModal, QuickPriorityModal
 from devdash.task_export import export_tasks_to_file
+from devdash.config.schema import TasksConfig
 
 
 class TasksPanel(Container):
@@ -47,18 +48,27 @@ class TasksPanel(Container):
 
     tasks_content = reactive("")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, config: Optional[TasksConfig] = None, *args, **kwargs):
+        """Initialize Tasks panel.
+
+        Args:
+            config: Tasks panel configuration. If None, uses defaults.
+        """
         super().__init__(*args, **kwargs)
+        self.config = config or TasksConfig()
         self.content_widget: Optional[Static] = None
         self.tasks: List[Task] = []
         self.selected_index: int = 0
-        self.tasks_file = Path.cwd() / ".devdash_tasks.json"
 
-        # Filter and sort state
-        self.current_filter_priority: Optional[str] = None
-        self.current_filter_category: Optional[str] = None
-        self.show_done: bool = True
-        self.sort_by: str = "created"  # "created", "priority", "due_date", "text"
+        # Use configured tasks file path (support absolute or relative)
+        file_path = Path(self.config.file_path)
+        self.tasks_file = file_path if file_path.is_absolute() else Path.cwd() / file_path
+
+        # Filter and sort state - initialize from config
+        self.current_filter_priority: Optional[str] = self.config.default_priority_filter
+        self.current_filter_category: Optional[str] = self.config.default_category_filter
+        self.show_done: bool = self.config.show_completed
+        self.sort_by: str = self.config.default_sort
 
     def compose(self) -> ComposeResult:
         """Create child widgets."""
@@ -68,6 +78,9 @@ class TasksPanel(Container):
 
     def on_mount(self) -> None:
         """Called when widget is mounted."""
+        if not self.config.enabled:
+            self.tasks_content = "[dim]Tasks panel disabled in configuration[/]"
+            return
         self.load_tasks()
         self.refresh_display()
 
@@ -290,6 +303,30 @@ class TasksPanel(Container):
         self.current_filter_priority = None
         self.current_filter_category = None
         self.show_done = True
+        self.refresh_display()
+
+    def update_config(self, new_config: TasksConfig) -> None:
+        """Update the tasks configuration and apply changes.
+
+        Args:
+            new_config: New tasks configuration
+        """
+        old_path = self.config.file_path
+        self.config = new_config
+
+        # Update file path if it changed
+        file_path = Path(self.config.file_path)
+        new_tasks_file = file_path if file_path.is_absolute() else Path.cwd() / file_path
+
+        if old_path != self.config.file_path:
+            self.tasks_file = new_tasks_file
+            # Reload tasks from new location
+            self.load_tasks()
+
+        # Update sort and filters if they changed
+        self.sort_by = self.config.default_sort
+
+        # Refresh display with new settings
         self.refresh_display()
 
     def action_sort_tasks(self) -> None:

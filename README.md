@@ -2,7 +2,7 @@
 
 > A terminal dashboard for developers
 
-![Version](https://img.shields.io/badge/version-0.2.0-blue)
+![Version](https://img.shields.io/badge/version-0.2.2-blue)
 ![Python](https://img.shields.io/badge/python-3.9%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -95,6 +95,7 @@ The dashboard will automatically:
 | **General** | |
 | `q` or `Ctrl+C` | Quit DevDash |
 | `?` | Show help popup |
+| `c` | Open configuration editor |
 | `r` | Refresh all panels |
 | **Tasks Panel - Basic** | |
 | `a` | Add new task (quick mode) |
@@ -118,26 +119,94 @@ The dashboard will automatically:
 
 ## Configuration
 
-(Coming in future versions)
+DevDash can be customized using a `.devdash.toml` configuration file.
 
-Create a `.devdash.toml` in your home directory or project root:
+### Quick Start
+
+**Option 1: Use the Built-in Config Editor (Easiest)**
+
+1. Run DevDash: `devdash`
+2. Press `c` to open the configuration editor
+3. Edit settings with a visual TUI interface
+4. Press `Ctrl+S` to save (or click "Save" button)
+
+**Option 2: Generate Config File Manually**
+
+Generate an example configuration file:
+
+```bash
+devdash --generate-config > .devdash.toml
+```
+
+Or create `.devdash.toml` in your project or home directory with your custom settings:
 
 ```toml
-[git]
-enabled = true
-refresh_interval = 5  # seconds
+[timer]
+focus_duration = 50  # Longer focus sessions
+break_duration = 10
 
 [system]
-enabled = true
-refresh_interval = 1  # seconds
+refresh_interval = 2  # Slower updates
+cpu_warning_threshold = 70.0
+cpu_critical_threshold = 90.0
 
-[timer]
-focus_duration = 25  # minutes
-break_duration = 5   # minutes
-
-[tasks]
-file_path = ".devdash_tasks.json"
+[git]
+max_commits = 5  # Show more commits
 ```
+
+### Configuration File Locations
+
+DevDash looks for configuration files in this order (first found wins):
+
+1. `./.devdash.toml` (current directory - project-specific)
+2. `~/.config/devdash/config.toml` (user config directory)
+3. `~/.devdash.toml` (home directory)
+
+### CLI Options
+
+```bash
+devdash                          # Run with default or discovered config
+devdash --config my-config.toml  # Use a custom config file
+devdash --validate-config        # Check your config for errors
+devdash --show-config            # Display current configuration
+devdash --generate-config        # Generate example config to stdout
+devdash --version                # Show version
+devdash --help                   # Show all options
+```
+
+### Configuration Options
+
+**Git Panel:**
+- `enabled` - Show/hide panel (default: `true`)
+- `refresh_interval` - Update frequency in seconds (default: `5`)
+- `max_commits` - Number of recent commits to display (default: `3`)
+- `show_staged/modified/untracked` - Toggle file categories (default: `true`)
+
+**System Panel:**
+- `enabled` - Show/hide panel (default: `true`)
+- `refresh_interval` - Update frequency in seconds (default: `1`)
+- `show_cpu/ram/disk/uptime/load_avg` - Toggle individual metrics (default: `true`)
+- `cpu_warning_threshold` - Yellow warning % (default: `60.0`)
+- `cpu_critical_threshold` - Red critical % (default: `80.0`)
+- `progress_bar_width` - Progress bar size (default: `10`)
+
+**Tasks Panel:**
+- `enabled` - Show/hide panel (default: `true`)
+- `file_path` - Tasks file location (default: `.devdash_tasks.json`)
+- `default_sort` - Initial sort order: `created`, `priority`, `due_date`, `text` (default: `created`)
+- `show_completed` - Show done tasks by default (default: `true`)
+- `default_priority_filter` - Initial filter: `null`, `high`, `medium`, `low` (default: `null`)
+- `max_visible_tasks` - Pagination limit (default: `20`)
+- `truncate_length` - Text truncation threshold (default: `40`)
+
+**Timer Panel:**
+- `enabled` - Show/hide panel (default: `true`)
+- `focus_duration` - Focus session length in minutes (default: `25`)
+- `break_duration` - Break length in minutes (default: `5`)
+- `show_progress_bar` - Show progress visualization (default: `true`)
+- `progress_bar_width` - Progress bar size (default: `20`)
+
+See [`docs/config-example.toml`](docs/config-example.toml) for a complete example with all available options and detailed comments.
 
 ## Requirements
 

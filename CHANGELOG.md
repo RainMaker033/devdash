@@ -8,12 +8,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
-- Configuration file support (.devdash.toml)
 - Custom theme support
 - Plugin system
 - Sound notifications for timer
 - Multi-repository support
 - Performance optimizations
+
+## [0.3.0] - 2025-11-14
+
+### Added - Configuration System & Hot-Reload
+
+**Configuration Features:**
+- **TOML Configuration**: Full configuration file support with `.devdash.toml`
+- **Config Discovery**: Automatic config file detection (project > user > home)
+- **Interactive Config Editor**: Built-in TUI editor for modifying settings
+  - Press `c` to open the configuration editor
+  - Visual form interface for all settings
+  - Real-time validation with helpful error messages
+  - Save directly from within DevDash (Ctrl+S)
+- **Hot-Reload**: Configuration changes apply immediately without restart
+  - All panels update when config is saved
+  - Visual notifications show reload status
+  - No downtime required for config changes
+- **CLI Tools**: New command-line options for config management
+  - `--config FILE` - Use custom config file
+  - `--validate-config` - Validate configuration
+  - `--show-config` - Display current settings
+  - `--generate-config` - Generate example config file
+- **Panel Configuration**: Customize all panels with refresh rates, thresholds, display options
+- **Graceful Degradation**: Invalid configs show warnings but use defaults
+- **Comprehensive Documentation**: Example config file and README updates
+
+**Configurable Options:**
+- Git: refresh interval, max commits, show/hide file categories
+- System: refresh interval, custom warning/critical thresholds, progress bar width
+- Tasks: custom file path, default sort/filters, display limits
+- Timer: custom focus/break durations, progress bar toggle
+- All panels: enable/disable individual panels
+
+**Technical Improvements:**
+- Type-safe configuration with dataclasses
+- Configuration validation with helpful error messages
+- Config merging with defaults for partial configs
+- Support for Python 3.9-3.12 (uses tomllib on 3.11+, tomli on 3.9-3.10)
+- 95%+ test coverage for config module (79 unit tests)
+- Hot-reload system with `update_config()` methods on all panels
+- Textual notification system for user feedback
+
+### Fixed
+- **TOML Generation Bug**: Config editor was generating invalid TOML with `null` values
+  - Fixed to omit optional fields instead of writing `null`
+  - Prevents config loading failures and silent fallback to defaults
+- **Config Not Loading**: Users' saved config changes were being ignored due to TOML syntax errors
+- **Scrolling in Config Editor**: Improved scroll container focus handling
+
+### Changed
+- Config editor now dismisses automatically after save (triggers hot-reload)
+- Added visual notifications when config is reloaded successfully
+- Improved error handling in config reload flow
 
 ## [0.2.0] - 2025-11-13
 
@@ -202,11 +254,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.3.0 | 2025-11-14 | Configuration system with TOML support and hot-reload |
 | 0.2.0 | 2025-11-13 | Enhanced task management with priorities, due dates, categories, export |
 | 0.1.1 | 2025-11-13 | Documentation and branding updates |
 | 0.1.0 | 2025-11-13 | Initial release with all four panels |
 
-[Unreleased]: https://github.com/RainMaker033/devdash/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/RainMaker033/devdash/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/RainMaker033/devdash/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/RainMaker033/devdash/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/RainMaker033/devdash/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/RainMaker033/devdash/releases/tag/v0.1.0

@@ -54,6 +54,7 @@ class HelpModal(ModalScreen):
         return """[bold cyan]General[/]
   q / Ctrl+C  - Quit DevDash
   ?           - Show this help
+  c           - Open configuration editor
   r           - Refresh all panels
 
 [bold cyan]Tasks Panel - Basic[/]
