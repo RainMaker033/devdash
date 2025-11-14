@@ -16,6 +16,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multi-repository support
 - Performance optimizations
 
+## [0.1.1] - 2025-11-13
+
+### Changed
+- Updated branding: "devdash" → "DevDash" in documentation
+- Updated all repository URLs to https://github.com/RainMaker033/devdash
+- Updated author information in package metadata
+
+### Documentation
+- README: Capitalized product name to "DevDash"
+- CONTRIBUTING.md: Updated clone URLs
+- CHANGELOG.md: Updated project links
+- pyproject.toml: Updated repository URLs
+
 ## [0.1.0] - 2025-11-13
 
 ### Added
@@ -111,7 +124,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.1.1 | 2025-11-13 | Documentation and branding updates |
 | 0.1.0 | 2025-11-13 | Initial release with all four panels |
 
-[Unreleased]: https://github.com/RainMaker033/devdash/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/RainMaker033/devdash/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/RainMaker033/devdash/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/RainMaker033/devdash/releases/tag/v0.1.0
