@@ -514,7 +514,7 @@ Config file locations (in priority order):
     parser.add_argument(
         "--version",
         action="version",
-        version="devdash 0.3.0"
+        version="devdash 0.3.1"
     )
 
     args = parser.parse_args()
