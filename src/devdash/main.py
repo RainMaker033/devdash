@@ -58,6 +58,23 @@ class DevDashApp(App):
         ("q", "quit", "Quit"),
         ("?", "help", "Help"),
         ("r", "refresh", "Refresh"),
+        # Task management
+        ("a", "add_task", "Add Task"),
+        ("e", "edit_task", "Edit Task"),
+        ("space", "toggle_task", "Toggle Done"),
+        ("d", "delete_task", "Delete Task"),
+        ("p", "quick_priority", "Set Priority"),
+        ("f", "filter_tasks", "Filter"),
+        ("s", "sort_tasks", "Sort"),
+        ("x", "export_tasks", "Export"),
+        ("1", "filter_high", "High Priority"),
+        ("2", "filter_medium", "Medium Priority"),
+        ("3", "filter_low", "Low Priority"),
+        ("0", "clear_filters", "Clear Filters"),
+        # Timer
+        ("ctrl+f", "timer_focus", "Focus"),
+        ("ctrl+b", "timer_break", "Break"),
+        ("ctrl+s", "timer_stop", "Stop"),
     ]
 
     def compose(self) -> ComposeResult:
@@ -101,6 +118,83 @@ class DevDashApp(App):
         """Refresh all panels."""
         # Will implement when panels have refresh methods
         pass
+
+    # Task panel actions - delegate to TasksPanel
+    def action_add_task(self) -> None:
+        """Add a new task."""
+        tasks_panel = self.query_one(TasksPanel)
+        tasks_panel.action_add_task()
+
+    def action_edit_task(self) -> None:
+        """Edit selected task."""
+        tasks_panel = self.query_one(TasksPanel)
+        tasks_panel.action_edit_task()
+
+    def action_toggle_task(self) -> None:
+        """Toggle task completion."""
+        tasks_panel = self.query_one(TasksPanel)
+        tasks_panel.action_toggle_task()
+
+    def action_delete_task(self) -> None:
+        """Delete selected task."""
+        tasks_panel = self.query_one(TasksPanel)
+        tasks_panel.action_delete_task()
+
+    def action_quick_priority(self) -> None:
+        """Quick set priority."""
+        tasks_panel = self.query_one(TasksPanel)
+        tasks_panel.action_quick_priority()
+
+    def action_filter_tasks(self) -> None:
+        """Toggle task filter."""
+        tasks_panel = self.query_one(TasksPanel)
+        tasks_panel.action_filter_tasks()
+
+    def action_sort_tasks(self) -> None:
+        """Cycle sort order."""
+        tasks_panel = self.query_one(TasksPanel)
+        tasks_panel.action_sort_tasks()
+
+    def action_export_tasks(self) -> None:
+        """Export tasks to Markdown."""
+        tasks_panel = self.query_one(TasksPanel)
+        tasks_panel.action_export_tasks()
+
+    def action_filter_high(self) -> None:
+        """Filter high priority tasks."""
+        tasks_panel = self.query_one(TasksPanel)
+        tasks_panel.action_filter_high()
+
+    def action_filter_medium(self) -> None:
+        """Filter medium priority tasks."""
+        tasks_panel = self.query_one(TasksPanel)
+        tasks_panel.action_filter_medium()
+
+    def action_filter_low(self) -> None:
+        """Filter low priority tasks."""
+        tasks_panel = self.query_one(TasksPanel)
+        tasks_panel.action_filter_low()
+
+    def action_clear_filters(self) -> None:
+        """Clear all task filters."""
+        tasks_panel = self.query_one(TasksPanel)
+        tasks_panel.action_clear_filters()
+
+    # Timer panel actions - delegate to TimerPanel
+    def action_timer_focus(self) -> None:
+        """Start focus session."""
+        timer_panel = self.query_one(TimerPanel)
+        timer_panel.action_start_focus()
+
+    def action_timer_break(self) -> None:
+        """Start break session."""
+        timer_panel = self.query_one(TimerPanel)
+        timer_panel.action_start_break()
+
+    def action_timer_stop(self) -> None:
+        """Stop timer."""
+        timer_panel = self.query_one(TimerPanel)
+        timer_panel.action_stop_timer()
 
 
 def cli():
