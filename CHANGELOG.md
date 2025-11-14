@@ -12,9 +12,87 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Custom theme support
 - Plugin system
 - Sound notifications for timer
-- Export tasks to Markdown
 - Multi-repository support
 - Performance optimizations
+
+## [0.2.0] - 2025-11-13
+
+### Added - Enhanced Task Management
+
+**Major Features:**
+- **Task Priorities**: Three levels (High 🔴, Medium 🟡, Low 🟢) with visual indicators
+- **Due Dates**: ISO format dates with smart indicators (⚠️ overdue, 📅 due soon, 📆 future)
+- **Categories/Tags**: Multiple tags per task for organization
+- **Full Task Editor**: Modal dialog for editing all task fields (press `e`)
+- **Quick Priority**: Fast priority setting with keyboard shortcut (press `p`)
+- **Markdown Export**: Three export formats (grouped, flat, category-based)
+- **Filter & Sort**: Multiple filtering and sorting options
+- **Backward Compatibility**: Automatic migration of old task files
+
+**New Task Features:**
+- Edit modal with form fields for all task attributes
+- Priority quick-set modal with number key shortcuts
+- Visual display of priorities, due dates, and categories in task list
+- Task data model with validation
+- Migration system for legacy task format
+
+**Keyboard Shortcuts Added:**
+- `e` - Open full task editor
+- `p` - Quick set priority
+- `f` - Toggle filter (show/hide completed)
+- `s` - Cycle sort options
+- `x` - Export tasks to Markdown
+- `1`/`2`/`3` - Filter by high/medium/low priority
+- `0` - Clear all filters
+
+**Export Functionality:**
+- Export to Markdown in grouped format (by priority)
+- Export to Markdown in flat format (simple list)
+- Export to Markdown grouped by category
+- Automatic filename generation with timestamps
+- Rich formatting with emojis and metadata
+
+### Technical Improvements
+
+**New Modules:**
+- `task_model.py` - Enhanced Task dataclass with validation
+- `task_edit_modal.py` - Full-featured editing dialogs
+- `task_export.py` - Markdown export functionality
+
+**Enhanced Modules:**
+- `tasks_panel.py` - Complete rewrite with new features
+- `help_modal.py` - Updated with all new shortcuts
+
+**Testing:**
+- 25 new tests for task model
+- 15 new tests for export functionality
+- Total test suite: 48 tests (all passing)
+- Comprehensive coverage of new features
+
+**Data Model:**
+```json
+{
+  "id": 1,
+  "text": "Task description",
+  "done": false,
+  "priority": "high|medium|low|null",
+  "due_date": "YYYY-MM-DD",
+  "categories": ["tag1", "tag2"],
+  "created_at": "ISO8601 datetime"
+}
+```
+
+### Changed
+- Tasks panel now uses enhanced Task model instead of plain dictionaries
+- Task display includes priority emojis, due date indicators, and category tags
+- Filter status now shown in panel header
+- Task text truncated at 40 chars (was 50) to make room for metadata
+
+### Documentation
+- Updated README with all new features
+- Updated keyboard shortcuts table
+- Updated help modal with comprehensive shortcuts
+- Added detailed feature descriptions
 
 ## [0.1.1] - 2025-11-13
 
@@ -124,9 +202,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Description |
 |---------|------|-------------|
+| 0.2.0 | 2025-11-13 | Enhanced task management with priorities, due dates, categories, export |
 | 0.1.1 | 2025-11-13 | Documentation and branding updates |
 | 0.1.0 | 2025-11-13 | Initial release with all four panels |
 
-[Unreleased]: https://github.com/RainMaker033/devdash/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/RainMaker033/devdash/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/RainMaker033/devdash/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/RainMaker033/devdash/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/RainMaker033/devdash/releases/tag/v0.1.0

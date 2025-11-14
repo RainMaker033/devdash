@@ -2,7 +2,7 @@
 
 > A terminal dashboard for developers
 
-![Version](https://img.shields.io/badge/version-0.1.1-blue)
+![Version](https://img.shields.io/badge/version-0.2.0-blue)
 ![Python](https://img.shields.io/badge/python-3.9%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -30,10 +30,16 @@ Stop alt-tabbing between multiple terminal windows. Get everything in one unifie
 - Session uptime (optional)
 
 ### Tasks Panel
-- Simple JSON-based task storage
-- Add, toggle, delete tasks with keyboard shortcuts
-- Persistent across sessions
-- Stored locally in `.devdash_tasks.json`
+- **Enhanced task management** with priorities, due dates, and categories
+- **Priority levels**: 🔴 High, 🟡 Medium, 🟢 Low with visual indicators
+- **Due dates** with smart indicators (⚠️ overdue, 📅 due soon, 📆 future)
+- **Categories/tags** for organization and filtering
+- **Full-featured editor** with modal dialog for detailed task editing
+- **Quick actions**: Add, edit, toggle, delete with keyboard shortcuts
+- **Filter & sort**: Filter by priority/category, sort by date/priority/text
+- **Export to Markdown**: Generate formatted task lists in multiple formats
+- **Backward compatible**: Automatically migrates old task files
+- Persistent storage in `.devdash_tasks.json`
 
 ### Timer Panel
 - Pomodoro technique: 25min focus, 5min break
@@ -86,13 +92,25 @@ The dashboard will automatically:
 
 | Key | Action |
 |-----|--------|
+| **General** | |
 | `q` or `Ctrl+C` | Quit DevDash |
 | `?` | Show help popup |
 | `r` | Refresh all panels |
-| **Tasks Panel** | |
-| `a` | Add new task |
+| **Tasks Panel - Basic** | |
+| `a` | Add new task (quick mode) |
+| `e` | Edit task (full editor with all fields) |
 | `space` | Toggle task done/undone |
 | `d` | Delete selected task |
+| `↑` / `↓` | Navigate tasks |
+| **Tasks Panel - Advanced** | |
+| `p` | Quick set priority for selected task |
+| `f` | Toggle filter (show/hide completed) |
+| `s` | Cycle sort (created/priority/due date/text) |
+| `x` | Export tasks to Markdown file |
+| `1` | Filter to show only high priority |
+| `2` | Filter to show only medium priority |
+| `3` | Filter to show only low priority |
+| `0` | Clear all filters |
 | **Timer Panel** | |
 | `f` | Start focus session (25min) |
 | `b` | Start break (5min) |

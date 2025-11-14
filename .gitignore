@@ -133,6 +133,12 @@ dmypy.json
 .DS_Store
 Thumbs.db
 
-# devdash specific
+# devdash specific - user data files
 .devdash_tasks.json
 .devdash.toml
+
+# Testing artifacts and temporary files
+test.txt
+*.tmp
+*.temp
+.pytest_cache/

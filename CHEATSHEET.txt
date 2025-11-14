@@ -1,0 +1,45 @@
+╔═══════════════════════════════════════════════════════════╗
+║                   DEVDASH CHEAT SHEET                     ║
+╠═══════════════════════════════════════════════════════════╣
+║                                                           ║
+║  START:  ~/Downloads/devdash/start-devdash.sh            ║
+║                                                           ║
+╠═══════════════════════════════════════════════════════════╣
+║  GENERAL                                                  ║
+╠═══════════════════════════════════════════════════════════╣
+║  ?        Show help popup                                 ║
+║  q        Quit DevDash                                    ║
+║  r        Refresh all panels                              ║
+║  Ctrl+C   Also quits                                      ║
+╠═══════════════════════════════════════════════════════════╣
+║  TASKS (Bottom Left Panel)                                ║
+╠═══════════════════════════════════════════════════════════╣
+║  a        Add new task                                    ║
+║  space    Toggle task done/undone                         ║
+║  d        Delete selected task                            ║
+║  ↑        Move selection up                               ║
+║  ↓        Move selection down                             ║
+╠═══════════════════════════════════════════════════════════╣
+║  TIMER (Bottom Right Panel)                               ║
+╠═══════════════════════════════════════════════════════════╣
+║  f        Start focus session (25 minutes)                ║
+║  b        Start break (5 minutes)                         ║
+║  s        Stop timer / return to idle                     ║
+╠═══════════════════════════════════════════════════════════╣
+║  AFTER QUITTING                                           ║
+╠═══════════════════════════════════════════════════════════╣
+║  Check saved tasks:                                       ║
+║    ~/Downloads/devdash/check-tasks.sh                     ║
+║                                                           ║
+║  Run tests:                                               ║
+║    cd ~/Downloads/devdash                                 ║
+║    source venv/bin/activate                               ║
+║    pytest -v                                              ║
+╠═══════════════════════════════════════════════════════════╣
+║  PANELS OVERVIEW                                          ║
+╠═══════════════════════════════════════════════════════════╣
+║  Top Left:     Git Status (auto-updates every 5s)         ║
+║  Top Right:    System Resources (updates every 1s)        ║
+║  Bottom Left:  Tasks (persists to .devdash_tasks.json)    ║
+║  Bottom Right: Pomodoro Timer                             ║
+╚═══════════════════════════════════════════════════════════╝
