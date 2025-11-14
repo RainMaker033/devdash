@@ -110,6 +110,15 @@ class DevDashApp(App):
         """Quit the application."""
         self.exit()
 
+    def on_unmount(self) -> None:
+        """Clean up terminal state on exit."""
+        # Reset terminal modes to prevent cursor artifacts
+        import os
+        # Disable mouse tracking
+        os.system('printf "\\033[?1000l\\033[?1003l\\033[?1015l\\033[?1006l"')
+        # Reset terminal
+        os.system('tput reset 2>/dev/null || true')
+
     def action_help(self) -> None:
         """Show help popup."""
         self.push_screen(HelpModal())
