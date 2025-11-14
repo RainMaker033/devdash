@@ -204,6 +204,8 @@ class TasksPanel(Container):
 
     def handle_edit_save(self, message: TaskEditModal.SaveTask) -> None:
         """Handle task save from edit modal."""
+        if message is None:
+            return  # User cancelled
         task_data = message.task_data
         task = Task.from_dict(task_data)
 
@@ -228,6 +230,8 @@ class TasksPanel(Container):
 
     def handle_priority_set(self, message: QuickPriorityModal.SetPriority) -> None:
         """Handle priority selection from modal."""
+        if message is None:
+            return  # User cancelled
         if 0 <= self.selected_index < len(self.tasks):
             self.tasks[self.selected_index].priority = message.priority
             self.save_tasks()

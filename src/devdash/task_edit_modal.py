@@ -99,7 +99,7 @@ class TaskEditModal(ModalScreen):
             task_id: ID for new task (ignored if task is provided)
         """
         super().__init__()
-        self.task = task
+        self.edit_task = task
         self.task_id = task_id or (task.id if task else 1)
         self.is_new = task is None
 
@@ -115,7 +115,7 @@ class TaskEditModal(ModalScreen):
                 with Horizontal(classes="field-row"):
                     yield Label("Task:", classes="field-label")
                     yield Input(
-                        value=self.task.text if self.task else "",
+                        value=self.edit_task.text if self.edit_task else "",
                         placeholder="Enter task description...",
                         id="task-text",
                         classes="field-input"
@@ -131,7 +131,7 @@ class TaskEditModal(ModalScreen):
                             ("🟡 Medium", "medium"),
                             ("🟢 Low", "low"),
                         ],
-                        value=self.task.priority if self.task else None,
+                        value=self.edit_task.priority if self.edit_task else None,
                         id="task-priority",
                         classes="field-input"
                     )
@@ -140,7 +140,7 @@ class TaskEditModal(ModalScreen):
                 with Horizontal(classes="field-row"):
                     yield Label("Due Date:", classes="field-label")
                     yield Input(
-                        value=self.task.due_date if self.task else "",
+                        value=self.edit_task.due_date if self.edit_task else "",
                         placeholder="YYYY-MM-DD (leave empty for none)",
                         id="task-due-date",
                         classes="field-input"
@@ -155,7 +155,7 @@ class TaskEditModal(ModalScreen):
                 with Horizontal(classes="field-row"):
                     yield Label("Categories:", classes="field-label")
                     yield Input(
-                        value=", ".join(self.task.categories) if self.task else "",
+                        value=", ".join(self.edit_task.categories) if self.edit_task else "",
                         placeholder="work, personal, urgent (comma-separated)",
                         id="task-categories",
                         classes="category-input"
@@ -219,11 +219,11 @@ class TaskEditModal(ModalScreen):
         task_data = {
             "id": self.task_id,
             "text": text,
-            "done": self.task.done if self.task else False,
+            "done": self.edit_task.done if self.edit_task else False,
             "priority": priority,
             "due_date": due_date,
             "categories": categories,
-            "created_at": self.task.created_at if self.task else datetime.now().isoformat()
+            "created_at": self.edit_task.created_at if self.edit_task else datetime.now().isoformat()
         }
 
         # Send message and close
