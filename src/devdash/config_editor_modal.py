@@ -552,6 +552,195 @@ class ConfigEditorModal(ModalScreen):
                                 classes="config-input"
                             )
 
+                # Keybindings Tab
+                with TabPane("Keybindings", id="keybindings-tab"):
+                    with Container(classes="tab-content"):
+                        yield Static("━━━ [bold magenta]Keybindings[/] ━━━", classes="section-title")
+                        yield Static("[dim]Customize keyboard shortcuts. Use standard key names like 'a', 'F' (Shift+f), 'ctrl+c', 'space'[/]", classes="instructions")
+
+                        # General actions
+                        yield Static("[bold]General Actions[/]", classes="section-title")
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Quit:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.quit,
+                                placeholder="q",
+                                id="keybinding_quit",
+                                classes="config-input"
+                            )
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Help:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.help,
+                                placeholder="?",
+                                id="keybinding_help",
+                                classes="config-input"
+                            )
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Config:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.config,
+                                placeholder="c",
+                                id="keybinding_config",
+                                classes="config-input"
+                            )
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Refresh:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.refresh,
+                                placeholder="r",
+                                id="keybinding_refresh",
+                                classes="config-input"
+                            )
+
+                        # Task management
+                        yield Static("[bold]Task Management[/]", classes="section-title")
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Add Task:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.add_task,
+                                placeholder="a",
+                                id="keybinding_add_task",
+                                classes="config-input"
+                            )
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Edit Task:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.edit_task,
+                                placeholder="e",
+                                id="keybinding_edit_task",
+                                classes="config-input"
+                            )
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Toggle Task:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.toggle_task,
+                                placeholder="space",
+                                id="keybinding_toggle_task",
+                                classes="config-input"
+                            )
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Delete Task:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.delete_task,
+                                placeholder="d",
+                                id="keybinding_delete_task",
+                                classes="config-input"
+                            )
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Quick Priority:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.quick_priority,
+                                placeholder="p",
+                                id="keybinding_quick_priority",
+                                classes="config-input"
+                            )
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Filter Tasks:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.filter_tasks,
+                                placeholder="f",
+                                id="keybinding_filter_tasks",
+                                classes="config-input"
+                            )
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Sort Tasks:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.sort_tasks,
+                                placeholder="s",
+                                id="keybinding_sort_tasks",
+                                classes="config-input"
+                            )
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Export Tasks:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.export_tasks,
+                                placeholder="x",
+                                id="keybinding_export_tasks",
+                                classes="config-input"
+                            )
+
+                        # Task filters
+                        yield Static("[bold]Task Filters[/]", classes="section-title")
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Filter High Priority:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.filter_high,
+                                placeholder="1",
+                                id="keybinding_filter_high",
+                                classes="config-input"
+                            )
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Filter Medium Priority:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.filter_medium,
+                                placeholder="2",
+                                id="keybinding_filter_medium",
+                                classes="config-input"
+                            )
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Filter Low Priority:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.filter_low,
+                                placeholder="3",
+                                id="keybinding_filter_low",
+                                classes="config-input"
+                            )
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Clear Filters:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.clear_filters,
+                                placeholder="0",
+                                id="keybinding_clear_filters",
+                                classes="config-input"
+                            )
+
+                        # Timer controls
+                        yield Static("[bold]Timer Controls[/]", classes="section-title")
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Timer Focus:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.timer_focus,
+                                placeholder="F",
+                                id="keybinding_timer_focus",
+                                classes="config-input"
+                            )
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Timer Break:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.timer_break,
+                                placeholder="B",
+                                id="keybinding_timer_break",
+                                classes="config-input"
+                            )
+
+                        with Horizontal(classes="config-row"):
+                            yield Static("Timer Stop:", classes="config-label")
+                            yield Input(
+                                value=self.config.keybindings.timer_stop,
+                                placeholder="S",
+                                id="keybinding_timer_stop",
+                                classes="config-input"
+                            )
+
     def _show_status(self, message: str, error: bool = False) -> None:
         """Show a status message.
 
@@ -655,6 +844,27 @@ class ConfigEditorModal(ModalScreen):
             timer_show_progress_bar = self._get_switch_value("timer_show_progress_bar")
             timer_progress = int(self._get_input_value("timer_progress_width"))
 
+            # Keybindings
+            kb_quit = self._get_input_value("keybinding_quit").strip()
+            kb_help = self._get_input_value("keybinding_help").strip()
+            kb_config = self._get_input_value("keybinding_config").strip()
+            kb_refresh = self._get_input_value("keybinding_refresh").strip()
+            kb_add_task = self._get_input_value("keybinding_add_task").strip()
+            kb_edit_task = self._get_input_value("keybinding_edit_task").strip()
+            kb_toggle_task = self._get_input_value("keybinding_toggle_task").strip()
+            kb_delete_task = self._get_input_value("keybinding_delete_task").strip()
+            kb_quick_priority = self._get_input_value("keybinding_quick_priority").strip()
+            kb_filter_tasks = self._get_input_value("keybinding_filter_tasks").strip()
+            kb_sort_tasks = self._get_input_value("keybinding_sort_tasks").strip()
+            kb_export_tasks = self._get_input_value("keybinding_export_tasks").strip()
+            kb_filter_high = self._get_input_value("keybinding_filter_high").strip()
+            kb_filter_medium = self._get_input_value("keybinding_filter_medium").strip()
+            kb_filter_low = self._get_input_value("keybinding_filter_low").strip()
+            kb_clear_filters = self._get_input_value("keybinding_clear_filters").strip()
+            kb_timer_focus = self._get_input_value("keybinding_timer_focus").strip()
+            kb_timer_break = self._get_input_value("keybinding_timer_break").strip()
+            kb_timer_stop = self._get_input_value("keybinding_timer_stop").strip()
+
             # Validate values
             errors = []
 
@@ -697,6 +907,31 @@ class ConfigEditorModal(ModalScreen):
                 errors.append("Break duration must be >= 1")
             if timer_long_break < 1:
                 errors.append("Long break duration must be >= 1")
+
+            # Validate keybindings - check for duplicates
+            keybindings_list = [
+                ("quit", kb_quit), ("help", kb_help), ("config", kb_config), ("refresh", kb_refresh),
+                ("add_task", kb_add_task), ("edit_task", kb_edit_task), ("toggle_task", kb_toggle_task),
+                ("delete_task", kb_delete_task), ("quick_priority", kb_quick_priority),
+                ("filter_tasks", kb_filter_tasks), ("sort_tasks", kb_sort_tasks),
+                ("export_tasks", kb_export_tasks), ("filter_high", kb_filter_high),
+                ("filter_medium", kb_filter_medium), ("filter_low", kb_filter_low),
+                ("clear_filters", kb_clear_filters), ("timer_focus", kb_timer_focus),
+                ("timer_break", kb_timer_break), ("timer_stop", kb_timer_stop)
+            ]
+
+            # Check for empty keybindings
+            for action_name, key_value in keybindings_list:
+                if not key_value:
+                    errors.append(f"Keybinding for {action_name} cannot be empty")
+
+            # Check for duplicate keybindings
+            key_map = {}
+            for action_name, key_value in keybindings_list:
+                if key_value and key_value in key_map:
+                    errors.append(f"Duplicate keybinding: '{key_value}' used for both {key_map[key_value]} and {action_name}")
+                elif key_value:
+                    key_map[key_value] = action_name
 
             if errors:
                 self._show_status(f"Validation errors: {', '.join(errors)}", error=True)
@@ -774,6 +1009,31 @@ panel_padding = {self.config.ui.panel_padding}
 show_footer = true
 show_header = true
 compact_view = false
+
+[keybindings]
+# General actions
+quit = "{kb_quit}"
+help = "{kb_help}"
+config = "{kb_config}"
+refresh = "{kb_refresh}"
+# Task management
+add_task = "{kb_add_task}"
+edit_task = "{kb_edit_task}"
+toggle_task = "{kb_toggle_task}"
+delete_task = "{kb_delete_task}"
+quick_priority = "{kb_quick_priority}"
+filter_tasks = "{kb_filter_tasks}"
+sort_tasks = "{kb_sort_tasks}"
+export_tasks = "{kb_export_tasks}"
+# Task filters
+filter_high = "{kb_filter_high}"
+filter_medium = "{kb_filter_medium}"
+filter_low = "{kb_filter_low}"
+clear_filters = "{kb_clear_filters}"
+# Timer controls
+timer_focus = "{kb_timer_focus}"
+timer_break = "{kb_timer_break}"
+timer_stop = "{kb_timer_stop}"
 """
 
             # Write to file

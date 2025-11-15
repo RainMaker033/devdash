@@ -101,11 +101,40 @@ class UIConfig:
 
 @dataclass
 class KeybindingsConfig:
-    """Custom keybindings configuration (future feature)."""
+    """Custom keybindings configuration.
 
+    All keybindings can be customized. Use standard key names like:
+    - Single chars: "a", "q", "?"
+    - Special keys: "space", "enter", "escape"
+    - Modified keys: "ctrl+c", "shift+f", "F" (uppercase for Shift+f)
+    """
+
+    # General actions
     quit: str = "q"
     help: str = "?"
+    config: str = "c"
     refresh: str = "r"
+
+    # Task management
+    add_task: str = "a"
+    edit_task: str = "e"
+    toggle_task: str = "space"
+    delete_task: str = "d"
+    quick_priority: str = "p"
+    filter_tasks: str = "f"
+    sort_tasks: str = "s"
+    export_tasks: str = "x"
+
+    # Task filters
+    filter_high: str = "1"
+    filter_medium: str = "2"
+    filter_low: str = "3"
+    clear_filters: str = "0"
+
+    # Timer controls (use Shift+key to avoid conflicts)
+    timer_focus: str = "F"
+    timer_break: str = "B"
+    timer_stop: str = "S"
 
 
 @dataclass

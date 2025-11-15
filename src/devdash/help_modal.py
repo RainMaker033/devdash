@@ -2,14 +2,26 @@
 Help modal widget - displays keyboard shortcuts and usage information
 """
 
+from typing import Optional
 from textual.app import ComposeResult
 from textual.widgets import Static
 from textual.containers import Container
 from textual.screen import ModalScreen
 
+from devdash.config import DevDashConfig, get_default_config
+
 
 class HelpModal(ModalScreen):
     """Modal screen displaying help information."""
+
+    def __init__(self, config: Optional[DevDashConfig] = None):
+        """Initialize help modal.
+
+        Args:
+            config: Configuration object to read keybindings from. If None, uses defaults.
+        """
+        super().__init__()
+        self.config = config or get_default_config()
 
     DEFAULT_CSS = """
     HelpModal {
@@ -50,32 +62,33 @@ class HelpModal(ModalScreen):
             yield Static(self._get_help_text(), id="help-content")
 
     def _get_help_text(self) -> str:
-        """Generate help text content."""
-        return """[bold cyan]General[/]
-  q / Ctrl+C  - Quit DevDash
-  ?           - Show this help
-  c           - Open configuration editor
-  r           - Refresh all panels
+        """Generate help text content using configured keybindings."""
+        kb = self.config.keybindings
+        return f"""[bold cyan]General[/]
+  {kb.quit} / Ctrl+C  - Quit DevDash
+  {kb.help}           - Show this help
+  {kb.config}         - Open configuration editor
+  {kb.refresh}        - Refresh all panels
 
 [bold cyan]Tasks Panel - Basic[/]
-  a           - Add new task (quick)
-  e           - Edit task (full editor with priority, due date, categories)
-  space       - Toggle task done/undone
-  d           - Delete selected task
-  ↑/↓         - Navigate tasks
+  {kb.add_task}       - Add new task (quick)
+  {kb.edit_task}      - Edit task (full editor with priority, due date, categories)
+  {kb.toggle_task}    - Toggle task done/undone
+  {kb.delete_task}    - Delete selected task
+  ↑/↓                 - Navigate tasks
 
 [bold cyan]Tasks Panel - Advanced[/]
-  p           - Quick set priority
-  f           - Toggle filter (show/hide completed)
-  s           - Cycle sort (created/priority/due date/text)
-  x           - Export tasks to Markdown
-  1/2/3       - Filter by priority (high/medium/low)
-  0           - Clear all filters
+  {kb.quick_priority} - Quick set priority
+  {kb.filter_tasks}   - Toggle filter (show/hide completed)
+  {kb.sort_tasks}     - Cycle sort (created/priority/due date/text)
+  {kb.export_tasks}   - Export tasks to Markdown
+  {kb.filter_high}/{kb.filter_medium}/{kb.filter_low} - Filter by priority (high/medium/low)
+  {kb.clear_filters}  - Clear all filters
 
 [bold cyan]Timer Panel[/]
-  Shift+F     - Start focus session (25 minutes)
-  Shift+B     - Start break (5 minutes)
-  Shift+S     - Stop timer / return to idle
+  {kb.timer_focus}    - Start focus session ({self.config.timer.focus_duration} minutes)
+  {kb.timer_break}    - Start break ({self.config.timer.break_duration} minutes)
+  {kb.timer_stop}     - Stop timer / return to idle
 
 [bold cyan]Task Features[/]
   • Priorities: 🔴 High, 🟡 Medium, 🟢 Low
@@ -90,7 +103,7 @@ class HelpModal(ModalScreen):
   • Tasks Panel manages TODO with priorities, dates, categories
   • Timer Panel provides Pomodoro time management
 
-[dim]Press ESC or q to close this help[/]
+[dim]Press ESC or {kb.quit} to close this help[/]
 """
 
     def action_dismiss(self) -> None:

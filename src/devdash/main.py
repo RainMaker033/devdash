@@ -4,6 +4,7 @@ Main entry point for devdash application.
 
 import sys
 import argparse
+import re
 from pathlib import Path
 from datetime import datetime
 from typing import Optional
@@ -11,6 +12,7 @@ from typing import Optional
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Static
 from textual.containers import Container, Horizontal, Vertical
+from textual.binding import Binding
 
 from devdash.git_panel import GitPanel
 from devdash.system_panel import SystemPanel
@@ -25,7 +27,61 @@ from devdash.config import (
     ConfigLoader,
     ConfigValidator,
     get_default_config,
+    KeybindingsConfig,
 )
+
+
+def _normalize_keybinding(value: str) -> str:
+    """Normalize user-provided keybinding strings for Textual.
+
+    We lower-case multi-character bindings (e.g. Ctrl+A -> ctrl+a) while leaving
+    single characters untouched so Shift-style bindings (like `F`) keep meaning.
+    """
+
+    parts = [part.strip() for part in value.strip().split(",") if part.strip()]
+    normalized_parts = []
+    for part in parts:
+        if len(part) == 1:
+            normalized_parts.append(part)
+            continue
+        normalized = part.lower()
+        normalized = re.sub(r"(ctrl|shift|alt|meta|option|cmd|super)-", r"\1+", normalized)
+        normalized_parts.append(normalized)
+    return ",".join(normalized_parts)
+
+
+def _generate_keymap(config: KeybindingsConfig) -> dict[str, str]:
+    """Generate a textual keymap dictionary from keybindings configuration."""
+
+    return {
+        # General actions
+        "quit": _normalize_keybinding(config.quit),
+        "help": _normalize_keybinding(config.help),
+        "config": _normalize_keybinding(config.config),
+        "refresh": _normalize_keybinding(config.refresh),
+        # Task management
+        "add_task": _normalize_keybinding(config.add_task),
+        "edit_task": _normalize_keybinding(config.edit_task),
+        "toggle_task": _normalize_keybinding(config.toggle_task),
+        "delete_task": _normalize_keybinding(config.delete_task),
+        "quick_priority": _normalize_keybinding(config.quick_priority),
+        "filter_tasks": _normalize_keybinding(config.filter_tasks),
+        "sort_tasks": _normalize_keybinding(config.sort_tasks),
+        "export_tasks": _normalize_keybinding(config.export_tasks),
+        "filter_high": _normalize_keybinding(config.filter_high),
+        "filter_medium": _normalize_keybinding(config.filter_medium),
+        "filter_low": _normalize_keybinding(config.filter_low),
+        "clear_filters": _normalize_keybinding(config.clear_filters),
+        # Timer controls
+        "timer_focus": _normalize_keybinding(config.timer_focus),
+        "timer_break": _normalize_keybinding(config.timer_break),
+        "timer_stop": _normalize_keybinding(config.timer_stop),
+    }
+
+
+def create_devdash_app(config: DevDashConfig):
+    """Factory function to create a DevDashApp instance."""
+    return DevDashApp(config=config)
 
 
 class DevDashApp(App):
@@ -39,6 +95,7 @@ class DevDashApp(App):
         """
         super().__init__()
         self.config = config or self._load_config_with_fallback()
+        self._apply_keybindings()
 
     def _load_config_with_fallback(self) -> DevDashConfig:
         """Load configuration with error handling.
@@ -54,6 +111,13 @@ class DevDashApp(App):
             print("Using default configuration.", file=sys.stderr)
             from devdash.config import get_default_config
             return get_default_config()
+
+    def _apply_keybindings(self) -> None:
+        """Apply the current configuration's keybindings to the app."""
+        if not self.config:
+            return
+        keymap = _generate_keymap(self.config.keybindings)
+        self.set_keymap(keymap)
 
     CSS = """
     Screen {
@@ -90,27 +154,27 @@ class DevDashApp(App):
     """
 
     BINDINGS = [
-        ("q", "quit", "Quit"),
-        ("?", "help", "Help"),
-        ("c", "config", "Config"),
-        ("r", "refresh", "Refresh"),
+        Binding("q", "quit", "Quit", id="quit"),
+        Binding("?", "help", "Help", id="help"),
+        Binding("c", "config", "Config", id="config"),
+        Binding("r", "refresh", "Refresh", id="refresh"),
         # Task management
-        ("a", "add_task", "Add Task"),
-        ("e", "edit_task", "Edit Task"),
-        ("space", "toggle_task", "Toggle Done"),
-        ("d", "delete_task", "Delete Task"),
-        ("p", "quick_priority", "Set Priority"),
-        ("f", "filter_tasks", "Filter"),
-        ("s", "sort_tasks", "Sort"),
-        ("x", "export_tasks", "Export"),
-        ("1", "filter_high", "High Priority"),
-        ("2", "filter_medium", "Medium Priority"),
-        ("3", "filter_low", "Low Priority"),
-        ("0", "clear_filters", "Clear Filters"),
+        Binding("a", "add_task", "Add Task", id="add_task"),
+        Binding("e", "edit_task", "Edit Task", id="edit_task"),
+        Binding("space", "toggle_task", "Toggle Done", id="toggle_task"),
+        Binding("d", "delete_task", "Delete Task", id="delete_task"),
+        Binding("p", "quick_priority", "Set Priority", id="quick_priority"),
+        Binding("f", "filter_tasks", "Filter", id="filter_tasks"),
+        Binding("s", "sort_tasks", "Sort", id="sort_tasks"),
+        Binding("x", "export_tasks", "Export", id="export_tasks"),
+        Binding("1", "filter_high", "High Priority", id="filter_high"),
+        Binding("2", "filter_medium", "Medium Priority", id="filter_medium"),
+        Binding("3", "filter_low", "Low Priority", id="filter_low"),
+        Binding("0", "clear_filters", "Clear Filters", id="clear_filters"),
         # Timer (use Shift+key to avoid conflicts)
-        ("F", "timer_focus", "Focus"),
-        ("B", "timer_break", "Break"),
-        ("S", "timer_stop", "Stop"),
+        Binding("F", "timer_focus", "Focus", id="timer_focus"),
+        Binding("B", "timer_break", "Break", id="timer_break"),
+        Binding("S", "timer_stop", "Stop", id="timer_stop"),
     ]
 
     def compose(self) -> ComposeResult:
@@ -156,8 +220,8 @@ class DevDashApp(App):
         os.system('tput reset 2>/dev/null || true')
 
     def action_help(self) -> None:
-        """Show help popup."""
-        self.push_screen(HelpModal())
+        """Show help popup with configured keybindings."""
+        self.push_screen(HelpModal(self.config))
 
     def action_config(self) -> None:
         """Show configuration editor."""
@@ -192,6 +256,7 @@ class DevDashApp(App):
 
             # Update app config
             self.config = new_config
+            self._apply_keybindings()
 
             # Update each panel with new config
             git_panel = self.query_one(GitPanel)
@@ -374,10 +439,36 @@ show_header = true
 compact_view = false
 
 [keybindings]
-# Future feature: custom keybindings
+# Customize keyboard shortcuts
+# Use standard key names: single chars ("a", "q"), special keys ("space", "enter"),
+# modified keys ("ctrl+c", "shift+f"), or uppercase for Shift ("F" = Shift+f)
+
+# General actions
 quit = "q"
 help = "?"
+config = "c"
 refresh = "r"
+
+# Task management
+add_task = "a"
+edit_task = "e"
+toggle_task = "space"
+delete_task = "d"
+quick_priority = "p"
+filter_tasks = "f"
+sort_tasks = "s"
+export_tasks = "x"
+
+# Task filters
+filter_high = "1"
+filter_medium = "2"
+filter_low = "3"
+clear_filters = "0"
+
+# Timer controls (using Shift+key to avoid conflicts)
+timer_focus = "F"   # Shift+f
+timer_break = "B"   # Shift+b
+timer_stop = "S"    # Shift+s
 """
 
 
@@ -515,7 +606,7 @@ Config file locations (in priority order):
     parser.add_argument(
         "--version",
         action="version",
-        version="devdash 0.4.0"
+        version="devdash 0.5.0"
     )
 
     args = parser.parse_args()
@@ -565,8 +656,8 @@ Config file locations (in priority order):
     # Show config source on startup
     print(f"Using configuration: {config_source}")
 
-    # Run the app
-    app = DevDashApp(config=config)
+    # Run the app with custom keybindings
+    app = create_devdash_app(config)
     app.run()
 
 

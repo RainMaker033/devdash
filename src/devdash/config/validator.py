@@ -5,7 +5,7 @@ and meet logical constraints.
 """
 
 from typing import List
-from .schema import DevDashConfig, GitConfig, SystemConfig, TasksConfig, TimerConfig, UIConfig
+from .schema import DevDashConfig, GitConfig, SystemConfig, TasksConfig, TimerConfig, UIConfig, KeybindingsConfig
 
 
 class ConfigValidator:
@@ -27,6 +27,7 @@ class ConfigValidator:
         warnings.extend(ConfigValidator.validate_tasks(config.tasks))
         warnings.extend(ConfigValidator.validate_timer(config.timer))
         warnings.extend(ConfigValidator.validate_ui(config.ui))
+        warnings.extend(ConfigValidator.validate_keybindings(config.keybindings))
         return warnings
 
     @staticmethod
@@ -269,5 +270,46 @@ class ConfigValidator:
                 f"ui.panel_padding should be 0-5 (got {config.panel_padding}), "
                 "using default: 1"
             )
+
+        return warnings
+
+    @staticmethod
+    def validate_keybindings(config: KeybindingsConfig) -> List[str]:
+        """Validate keybindings configuration.
+
+        Args:
+            config: Keybindings configuration to validate
+
+        Returns:
+            List of warning messages
+        """
+        warnings = []
+
+        # Get all keybinding values and their action names
+        keybinding_map = {}
+        for field_name in config.__dataclass_fields__:
+            key_value = getattr(config, field_name)
+            if not key_value or not isinstance(key_value, str):
+                warnings.append(
+                    f"keybindings.{field_name} is empty or invalid, "
+                    f"using default"
+                )
+                continue
+
+            # Check for duplicates
+            if key_value in keybinding_map:
+                warnings.append(
+                    f"Duplicate keybinding: '{key_value}' is assigned to both "
+                    f"'{keybinding_map[key_value]}' and '{field_name}'"
+                )
+            else:
+                keybinding_map[key_value] = field_name
+
+            # Basic validation of key format
+            # Check for obviously invalid keys (very long strings, empty, etc.)
+            if len(key_value) > 20:
+                warnings.append(
+                    f"keybindings.{field_name} has suspiciously long key: '{key_value}'"
+                )
 
         return warnings
