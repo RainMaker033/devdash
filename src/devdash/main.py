@@ -317,6 +317,7 @@ max_commits = 3       # number of recent commits to display
 show_staged = true
 show_modified = true
 show_untracked = true
+repository_path = ""  # Optional: path to git repository (empty = current directory)
 
 [system]
 enabled = true
@@ -514,7 +515,7 @@ Config file locations (in priority order):
     parser.add_argument(
         "--version",
         action="version",
-        version="devdash 0.3.2"
+        version="devdash 0.4.0"
     )
 
     args = parser.parse_args()

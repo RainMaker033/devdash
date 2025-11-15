@@ -28,6 +28,7 @@ class GitConfig:
     show_modified: bool = True
     show_untracked: bool = True
     compact_mode: bool = False
+    repository_path: Optional[str] = None  # Path to repository (None = current directory)
 
 
 @dataclass

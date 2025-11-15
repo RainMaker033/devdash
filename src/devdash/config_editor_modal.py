@@ -259,6 +259,15 @@ class ConfigEditorModal(ModalScreen):
                                 id="git_show_untracked"
                             )
 
+                        with Horizontal(classes="config-row"):
+                            yield Static("Repository Path:", classes="config-label")
+                            yield Input(
+                                value=self.config.git.repository_path or "",
+                                placeholder="(leave empty for current directory)",
+                                id="git_repository_path",
+                                classes="config-input"
+                            )
+
                 # System Panel Tab
                 with TabPane("System", id="system-tab"):
                     with Container(classes="tab-content"):
@@ -603,6 +612,9 @@ class ConfigEditorModal(ModalScreen):
             git_show_staged = self._get_switch_value("git_show_staged")
             git_show_modified = self._get_switch_value("git_show_modified")
             git_show_untracked = self._get_switch_value("git_show_untracked")
+            git_repo_path = self._get_input_value("git_repository_path").strip()
+            # Convert empty string to None
+            git_repo_path = git_repo_path if git_repo_path else None
 
             # System
             system_enabled = self._get_switch_value("system_enabled")
@@ -713,6 +725,7 @@ max_commits = {git_commits}
 show_staged = {str(git_show_staged).lower()}
 show_modified = {str(git_show_modified).lower()}
 show_untracked = {str(git_show_untracked).lower()}
+repository_path = "{git_repo_path if git_repo_path else ""}"
 
 [system]
 enabled = {str(system_enabled).lower()}

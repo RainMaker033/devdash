@@ -91,9 +91,10 @@ class GitPanel(Container):
             return
 
         try:
-            # Try to open repo from current directory
+            # Try to open repo from configured path or current directory
             if self.repo is None:
-                self.repo = Repo(Path.cwd(), search_parent_directories=True)
+                repo_path = self._resolve_repository_path()
+                self.repo = Repo(repo_path, search_parent_directories=True)
 
             # Get current branch
             branch = self.repo.active_branch.name
@@ -174,12 +175,18 @@ class GitPanel(Container):
             new_config: New git configuration
         """
         old_interval = self.config.refresh_interval
+        old_repo_path = self.config.repository_path
+
         self.config = new_config
         self._apply_visibility()
 
         if not self.config.enabled:
             self._stop_refresh_timer()
             return
+
+        # If repository path changed, reload repo
+        if old_repo_path != new_config.repository_path:
+            self.repo = None  # Force reload on next refresh
 
         # Restart refresh timer if needed or if it was stopped while disabled
         if (
@@ -208,3 +215,21 @@ class GitPanel(Container):
         if self.refresh_timer is not None:
             self.refresh_timer.stop()
             self.refresh_timer = None
+
+    def _resolve_repository_path(self) -> Path:
+        """Resolve the repository path from config or use current directory.
+
+        Returns:
+            Path: Resolved absolute path to repository
+        """
+        if self.config.repository_path:
+            path = Path(self.config.repository_path)
+            # Expand ~ to home directory
+            path = path.expanduser()
+            # If still relative, make it relative to cwd
+            if not path.is_absolute():
+                path = Path.cwd() / path
+            return path.resolve()
+        else:
+            # Default behavior: use current working directory
+            return Path.cwd()
