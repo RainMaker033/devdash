@@ -78,8 +78,8 @@ class TasksPanel(Container):
 
     def on_mount(self) -> None:
         """Called when widget is mounted."""
+        self._apply_visibility()
         if not self.config.enabled:
-            self.tasks_content = "[dim]Tasks panel disabled in configuration[/]"
             return
         self.load_tasks()
         self.refresh_display()
@@ -88,6 +88,14 @@ class TasksPanel(Container):
         """Update content when tasks_content changes."""
         if self.content_widget:
             self.content_widget.update(new_content)
+
+    def _apply_visibility(self) -> None:
+        """Show or hide the panel based on configuration."""
+        self.display = self.config.enabled
+
+    def _interactions_enabled(self) -> bool:
+        """Return True if user-triggered actions should run."""
+        return self.config.enabled
 
     def load_tasks(self) -> None:
         """Load tasks from JSON file with migration support."""
@@ -132,6 +140,9 @@ class TasksPanel(Container):
 
     def refresh_display(self) -> None:
         """Refresh the tasks display with enhanced formatting."""
+        if not self.config.enabled:
+            return
+
         display_tasks = self.get_filtered_sorted_tasks()
 
         if not display_tasks:
@@ -202,11 +213,15 @@ class TasksPanel(Container):
 
     def action_add_task(self) -> None:
         """Open task editor modal to add a new task."""
+        if not self._interactions_enabled():
+            return
         next_id = max([t.id for t in self.tasks], default=0) + 1
         self.app.push_screen(TaskEditModal(task_id=next_id), self.handle_edit_save)
 
     def action_edit_task(self) -> None:
         """Open full edit dialog for selected task."""
+        if not self._interactions_enabled():
+            return
         if 0 <= self.selected_index < len(self.tasks):
             task = self.tasks[self.selected_index]
             self.app.push_screen(TaskEditModal(task=task), self.handle_edit_save)
@@ -217,8 +232,8 @@ class TasksPanel(Container):
 
     def handle_edit_save(self, message: TaskEditModal.SaveTask) -> None:
         """Handle task save from edit modal."""
-        if message is None:
-            return  # User cancelled
+        if not self.config.enabled or message is None:
+            return  # User cancelled or panel disabled
         task_data = message.task_data
         task = Task.from_dict(task_data)
 
@@ -238,13 +253,15 @@ class TasksPanel(Container):
 
     def action_quick_priority(self) -> None:
         """Open quick priority selection modal."""
+        if not self._interactions_enabled():
+            return
         if 0 <= self.selected_index < len(self.tasks):
             self.app.push_screen(QuickPriorityModal(), self.handle_priority_set)
 
     def handle_priority_set(self, message: QuickPriorityModal.SetPriority) -> None:
         """Handle priority selection from modal."""
-        if message is None:
-            return  # User cancelled
+        if not self.config.enabled or message is None:
+            return  # User cancelled or panel disabled
         if 0 <= self.selected_index < len(self.tasks):
             self.tasks[self.selected_index].priority = message.priority
             self.save_tasks()
@@ -252,6 +269,8 @@ class TasksPanel(Container):
 
     def action_toggle_task(self) -> None:
         """Toggle the selected task's done status."""
+        if not self._interactions_enabled():
+            return
         if 0 <= self.selected_index < len(self.tasks):
             self.tasks[self.selected_index].done = not self.tasks[self.selected_index].done
             self.save_tasks()
@@ -259,6 +278,8 @@ class TasksPanel(Container):
 
     def action_delete_task(self) -> None:
         """Delete the selected task."""
+        if not self._interactions_enabled():
+            return
         if 0 <= self.selected_index < len(self.tasks):
             self.tasks.pop(self.selected_index)
             if self.selected_index >= len(self.tasks) and self.tasks:
@@ -268,38 +289,52 @@ class TasksPanel(Container):
 
     def action_move_up(self) -> None:
         """Move selection up."""
+        if not self._interactions_enabled():
+            return
         if self.selected_index > 0:
             self.selected_index -= 1
             self.refresh_display()
 
     def action_move_down(self) -> None:
         """Move selection down."""
+        if not self._interactions_enabled():
+            return
         if self.selected_index < len(self.tasks) - 1:
             self.selected_index += 1
             self.refresh_display()
 
     def action_filter_tasks(self) -> None:
         """Toggle show/hide completed tasks."""
+        if not self._interactions_enabled():
+            return
         self.show_done = not self.show_done
         self.refresh_display()
 
     def action_filter_high(self) -> None:
         """Filter to show only high priority tasks."""
+        if not self._interactions_enabled():
+            return
         self.current_filter_priority = "high"
         self.refresh_display()
 
     def action_filter_medium(self) -> None:
         """Filter to show only medium priority tasks."""
+        if not self._interactions_enabled():
+            return
         self.current_filter_priority = "medium"
         self.refresh_display()
 
     def action_filter_low(self) -> None:
         """Filter to show only low priority tasks."""
+        if not self._interactions_enabled():
+            return
         self.current_filter_priority = "low"
         self.refresh_display()
 
     def action_clear_filters(self) -> None:
         """Clear all filters."""
+        if not self._interactions_enabled():
+            return
         self.current_filter_priority = None
         self.current_filter_category = None
         self.show_done = True
@@ -312,7 +347,9 @@ class TasksPanel(Container):
             new_config: New tasks configuration
         """
         old_path = self.config.file_path
+        was_enabled = self.config.enabled
         self.config = new_config
+        self._apply_visibility()
 
         # Update file path if it changed
         file_path = Path(self.config.file_path)
@@ -322,15 +359,27 @@ class TasksPanel(Container):
             self.tasks_file = new_tasks_file
             # Reload tasks from new location
             self.load_tasks()
+        elif self.config.enabled and not was_enabled:
+            # Panel was previously disabled; ensure tasks are loaded when enabling
+            self.tasks_file = new_tasks_file
+            self.load_tasks()
 
         # Update sort and filters if they changed
         self.sort_by = self.config.default_sort
+        self.show_done = self.config.show_completed
+        self.current_filter_priority = self.config.default_priority_filter
+        self.current_filter_category = self.config.default_category_filter
+
+        if not self.config.enabled:
+            return
 
         # Refresh display with new settings
         self.refresh_display()
 
     def action_sort_tasks(self) -> None:
         """Cycle through sort options."""
+        if not self._interactions_enabled():
+            return
         sort_options = ["created", "priority", "due_date", "text"]
         current_idx = sort_options.index(self.sort_by)
         self.sort_by = sort_options[(current_idx + 1) % len(sort_options)]
@@ -338,6 +387,8 @@ class TasksPanel(Container):
 
     def action_export_tasks(self) -> None:
         """Export tasks to Markdown."""
+        if not self._interactions_enabled():
+            return
         if not self.tasks:
             return
 
@@ -353,4 +404,3 @@ class TasksPanel(Container):
         except Exception:
             # Silently fail - could show error notification in future
             pass
-

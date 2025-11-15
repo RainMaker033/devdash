@@ -11,6 +11,7 @@ from textual.app import ComposeResult
 from textual.widgets import Static
 from textual.containers import Container
 from textual.reactive import reactive
+from textual.timer import Timer
 
 try:
     import psutil
@@ -55,6 +56,7 @@ class SystemPanel(Container):
         self.config = config or SystemConfig()
         self.content_widget: Optional[Static] = None
         self.start_time = time.time()
+        self.refresh_timer: Optional[Timer] = None
 
     def compose(self) -> ComposeResult:
         """Create child widgets."""
@@ -64,13 +66,17 @@ class SystemPanel(Container):
 
     def on_mount(self) -> None:
         """Called when widget is mounted."""
+        self._apply_visibility()
         if not self.config.enabled:
-            self.system_content = "[dim]System panel disabled in configuration[/]"
+            self._stop_refresh_timer()
             return
 
         self.refresh_data()
-        # Set up periodic refresh using configured interval
-        self.set_interval(self.config.refresh_interval, self.refresh_data)
+        self._start_refresh_timer()
+
+    def on_unmount(self) -> None:
+        """Clean up timers when widget is removed."""
+        self._stop_refresh_timer()
 
     def watch_system_content(self, new_content: str) -> None:
         """Update content when system_content changes."""
@@ -131,6 +137,9 @@ class SystemPanel(Container):
 
     def refresh_data(self) -> None:
         """Refresh system metrics."""
+        if not self.config.enabled:
+            return
+
         if not PSUTIL_AVAILABLE:
             self.system_content = "[red]psutil not available[/]"
             return
@@ -207,11 +216,35 @@ class SystemPanel(Container):
         """
         old_interval = self.config.refresh_interval
         self.config = new_config
+        self._apply_visibility()
 
-        # If refresh interval changed, restart the timer
-        if old_interval != new_config.refresh_interval and self.config.enabled:
-            # Clear old interval and set new one
-            self.set_interval(self.config.refresh_interval, self.refresh_data, name="system_refresh")
+        if not self.config.enabled:
+            self._stop_refresh_timer()
+            return
 
-        # Refresh display immediately with new settings
+        if (
+            self.refresh_timer is None
+            or old_interval != new_config.refresh_interval
+        ):
+            self._start_refresh_timer()
+
         self.refresh_data()
+
+    def _apply_visibility(self) -> None:
+        """Show or hide the panel based on configuration."""
+        self.display = self.config.enabled
+
+    def _start_refresh_timer(self) -> None:
+        """Start the periodic refresh timer."""
+        self._stop_refresh_timer()
+        self.refresh_timer = self.set_interval(
+            self.config.refresh_interval,
+            self.refresh_data,
+            name="system_refresh",
+        )
+
+    def _stop_refresh_timer(self) -> None:
+        """Stop the refresh timer if running."""
+        if self.refresh_timer is not None:
+            self.refresh_timer.stop()
+            self.refresh_timer = None

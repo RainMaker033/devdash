@@ -9,6 +9,7 @@ from textual.app import ComposeResult
 from textual.widgets import Static
 from textual.containers import Container
 from textual.reactive import reactive
+from textual.timer import Timer
 
 try:
     from git import Repo, InvalidGitRepositoryError, GitCommandError
@@ -53,6 +54,7 @@ class GitPanel(Container):
         self.config = config or GitConfig()
         self.repo: Optional[Repo] = None
         self.content_widget: Optional[Static] = None
+        self.refresh_timer: Optional[Timer] = None
 
     def compose(self) -> ComposeResult:
         """Create child widgets."""
@@ -62,13 +64,17 @@ class GitPanel(Container):
 
     def on_mount(self) -> None:
         """Called when widget is mounted."""
+        self._apply_visibility()
         if not self.config.enabled:
-            self.git_content = "[dim]Git panel disabled in configuration[/]"
+            self._stop_refresh_timer()
             return
 
         self.refresh_data()
-        # Set up periodic refresh using configured interval
-        self.set_interval(self.config.refresh_interval, self.refresh_data)
+        self._start_refresh_timer()
+
+    def on_unmount(self) -> None:
+        """Clean up when widget is removed."""
+        self._stop_refresh_timer()
 
     def watch_git_content(self, new_content: str) -> None:
         """Update content when git_content changes."""
@@ -77,6 +83,9 @@ class GitPanel(Container):
 
     def refresh_data(self) -> None:
         """Refresh git data from repository."""
+        if not self.config.enabled:
+            return
+
         if not GIT_AVAILABLE:
             self.git_content = "[red]GitPython not available[/]"
             return
@@ -166,11 +175,36 @@ class GitPanel(Container):
         """
         old_interval = self.config.refresh_interval
         self.config = new_config
+        self._apply_visibility()
 
-        # If refresh interval changed, restart the timer
-        if old_interval != new_config.refresh_interval and self.config.enabled:
-            # Clear old interval and set new one
-            self.set_interval(self.config.refresh_interval, self.refresh_data, name="git_refresh")
+        if not self.config.enabled:
+            self._stop_refresh_timer()
+            return
 
-        # Refresh display immediately with new settings
+        # Restart refresh timer if needed or if it was stopped while disabled
+        if (
+            self.refresh_timer is None
+            or old_interval != new_config.refresh_interval
+        ):
+            self._start_refresh_timer()
+
         self.refresh_data()
+
+    def _apply_visibility(self) -> None:
+        """Show or hide the panel based on configuration."""
+        self.display = self.config.enabled
+
+    def _start_refresh_timer(self) -> None:
+        """Start or restart the refresh timer."""
+        self._stop_refresh_timer()
+        self.refresh_timer = self.set_interval(
+            self.config.refresh_interval,
+            self.refresh_data,
+            name="git_refresh",
+        )
+
+    def _stop_refresh_timer(self) -> None:
+        """Stop the refresh timer if it's running."""
+        if self.refresh_timer is not None:
+            self.refresh_timer.stop()
+            self.refresh_timer = None

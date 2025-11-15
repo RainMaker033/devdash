@@ -7,7 +7,7 @@ from typing import Optional
 
 from textual.app import ComposeResult
 from textual.screen import ModalScreen
-from textual.widgets import Button, Input, Label, Static, TabbedContent, TabPane
+from textual.widgets import Button, Input, Label, Static, Switch, Select, TabbedContent, TabPane
 from textual.containers import Container, Vertical, Horizontal
 from textual.binding import Binding
 
@@ -122,6 +122,29 @@ class ConfigEditorModal(ModalScreen):
         background: $surface-lighten-1;
     }
 
+    Switch {
+        width: auto;
+        height: auto;
+        background: $surface;
+    }
+
+    Switch:focus {
+        background: $boost;
+    }
+
+    Select {
+        width: 100%;
+        height: auto;
+        min-height: 3;
+        border: tall $accent;
+        background: $surface;
+    }
+
+    Select:focus {
+        border: tall cyan;
+        background: $boost;
+    }
+
     #button-row {
         width: 100%;
         height: auto;
@@ -192,11 +215,9 @@ class ConfigEditorModal(ModalScreen):
 
                         with Horizontal(classes="config-row"):
                             yield Static("Enabled:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.git.enabled).lower(),
-                                placeholder="true",
-                                id="git_enabled",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.git.enabled,
+                                id="git_enabled"
                             )
 
                         with Horizontal(classes="config-row"):
@@ -219,29 +240,23 @@ class ConfigEditorModal(ModalScreen):
 
                         with Horizontal(classes="config-row"):
                             yield Static("Show Staged:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.git.show_staged).lower(),
-                                placeholder="true",
-                                id="git_show_staged",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.git.show_staged,
+                                id="git_show_staged"
                             )
 
                         with Horizontal(classes="config-row"):
                             yield Static("Show Modified:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.git.show_modified).lower(),
-                                placeholder="true",
-                                id="git_show_modified",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.git.show_modified,
+                                id="git_show_modified"
                             )
 
                         with Horizontal(classes="config-row"):
                             yield Static("Show Untracked:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.git.show_untracked).lower(),
-                                placeholder="true",
-                                id="git_show_untracked",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.git.show_untracked,
+                                id="git_show_untracked"
                             )
 
                 # System Panel Tab
@@ -251,11 +266,9 @@ class ConfigEditorModal(ModalScreen):
 
                         with Horizontal(classes="config-row"):
                             yield Static("Enabled:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.system.enabled).lower(),
-                                placeholder="true",
-                                id="system_enabled",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.system.enabled,
+                                id="system_enabled"
                             )
 
                         with Horizontal(classes="config-row"):
@@ -269,47 +282,37 @@ class ConfigEditorModal(ModalScreen):
 
                         with Horizontal(classes="config-row"):
                             yield Static("Show CPU:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.system.show_cpu).lower(),
-                                placeholder="true",
-                                id="system_show_cpu",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.system.show_cpu,
+                                id="system_show_cpu"
                             )
 
                         with Horizontal(classes="config-row"):
                             yield Static("Show RAM:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.system.show_ram).lower(),
-                                placeholder="true",
-                                id="system_show_ram",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.system.show_ram,
+                                id="system_show_ram"
                             )
 
                         with Horizontal(classes="config-row"):
                             yield Static("Show Disk:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.system.show_disk).lower(),
-                                placeholder="true",
-                                id="system_show_disk",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.system.show_disk,
+                                id="system_show_disk"
                             )
 
                         with Horizontal(classes="config-row"):
                             yield Static("Show Uptime:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.system.show_uptime).lower(),
-                                placeholder="true",
-                                id="system_show_uptime",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.system.show_uptime,
+                                id="system_show_uptime"
                             )
 
                         with Horizontal(classes="config-row"):
                             yield Static("Show Load Average:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.system.show_load_avg).lower(),
-                                placeholder="true",
-                                id="system_show_load_avg",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.system.show_load_avg,
+                                id="system_show_load_avg"
                             )
 
                         with Horizontal(classes="config-row"):
@@ -377,11 +380,11 @@ class ConfigEditorModal(ModalScreen):
 
                         with Horizontal(classes="config-row"):
                             yield Static("Progress Bar Style:", classes="config-label")
-                            yield Input(
+                            yield Select.from_values(
+                                ["blocks", "bars", "dots"],
                                 value=self.config.system.progress_bar_style,
-                                placeholder="blocks",
-                                id="system_progress_style",
-                                classes="config-input"
+                                allow_blank=False,
+                                id="system_progress_style"
                             )
 
                 # Tasks Panel Tab
@@ -391,11 +394,9 @@ class ConfigEditorModal(ModalScreen):
 
                         with Horizontal(classes="config-row"):
                             yield Static("Enabled:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.tasks.enabled).lower(),
-                                placeholder="true",
-                                id="tasks_enabled",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.tasks.enabled,
+                                id="tasks_enabled"
                             )
 
                         with Horizontal(classes="config-row"):
@@ -409,20 +410,18 @@ class ConfigEditorModal(ModalScreen):
 
                         with Horizontal(classes="config-row"):
                             yield Static("Default Sort:", classes="config-label")
-                            yield Input(
+                            yield Select.from_values(
+                                ["created", "priority", "due_date", "text"],
                                 value=self.config.tasks.default_sort,
-                                placeholder="created",
-                                id="tasks_default_sort",
-                                classes="config-input"
+                                allow_blank=False,
+                                id="tasks_default_sort"
                             )
 
                         with Horizontal(classes="config-row"):
                             yield Static("Show Completed:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.tasks.show_completed).lower(),
-                                placeholder="true",
-                                id="tasks_show_completed",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.tasks.show_completed,
+                                id="tasks_show_completed"
                             )
 
                         with Horizontal(classes="config-row"):
@@ -445,29 +444,23 @@ class ConfigEditorModal(ModalScreen):
 
                         with Horizontal(classes="config-row"):
                             yield Static("Show Categories:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.tasks.show_categories).lower(),
-                                placeholder="true",
-                                id="tasks_show_categories",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.tasks.show_categories,
+                                id="tasks_show_categories"
                             )
 
                         with Horizontal(classes="config-row"):
                             yield Static("Show Due Dates:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.tasks.show_due_dates).lower(),
-                                placeholder="true",
-                                id="tasks_show_due_dates",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.tasks.show_due_dates,
+                                id="tasks_show_due_dates"
                             )
 
                         with Horizontal(classes="config-row"):
                             yield Static("Show Priority Emoji:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.tasks.show_priority_emoji).lower(),
-                                placeholder="true",
-                                id="tasks_show_priority_emoji",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.tasks.show_priority_emoji,
+                                id="tasks_show_priority_emoji"
                             )
 
                         with Horizontal(classes="config-row"):
@@ -481,11 +474,11 @@ class ConfigEditorModal(ModalScreen):
 
                         with Horizontal(classes="config-row"):
                             yield Static("Export Format:", classes="config-label")
-                            yield Input(
+                            yield Select.from_values(
+                                ["grouped", "simple", "detailed"],
                                 value=self.config.tasks.export_format,
-                                placeholder="grouped",
-                                id="tasks_export_format",
-                                classes="config-input"
+                                allow_blank=False,
+                                id="tasks_export_format"
                             )
 
                 # Timer Panel Tab
@@ -495,11 +488,9 @@ class ConfigEditorModal(ModalScreen):
 
                         with Horizontal(classes="config-row"):
                             yield Static("Enabled:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.timer.enabled).lower(),
-                                placeholder="true",
-                                id="timer_enabled",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.timer.enabled,
+                                id="timer_enabled"
                             )
 
                         with Horizontal(classes="config-row"):
@@ -531,20 +522,16 @@ class ConfigEditorModal(ModalScreen):
 
                         with Horizontal(classes="config-row"):
                             yield Static("Auto Start Break:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.timer.auto_start_break).lower(),
-                                placeholder="false",
-                                id="timer_auto_start_break",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.timer.auto_start_break,
+                                id="timer_auto_start_break"
                             )
 
                         with Horizontal(classes="config-row"):
                             yield Static("Show Progress Bar:", classes="config-label")
-                            yield Input(
-                                value=str(self.config.timer.show_progress_bar).lower(),
-                                placeholder="true",
-                                id="timer_show_progress_bar",
-                                classes="config-input"
+                            yield Switch(
+                                value=self.config.timer.show_progress_bar,
+                                id="timer_show_progress_bar"
                             )
 
                         with Horizontal(classes="config-row"):
@@ -583,30 +570,48 @@ class ConfigEditorModal(ModalScreen):
         """
         return self.query_one(f"#{input_id}", Input).value
 
+    def _get_switch_value(self, switch_id: str) -> bool:
+        """Get value from a switch widget.
+
+        Args:
+            switch_id: ID of the switch widget
+
+        Returns:
+            The switch value as a boolean
+        """
+        return self.query_one(f"#{switch_id}", Switch).value
+
+    def _get_select_value(self, select_id: str) -> str:
+        """Get value from a select widget.
+
+        Args:
+            select_id: ID of the select widget
+
+        Returns:
+            The select value as a string
+        """
+        return str(self.query_one(f"#{select_id}", Select).value)
+
     def _save_config(self) -> None:
         """Save the configuration to file."""
         try:
-            # Helper to parse boolean
-            def parse_bool(value: str) -> bool:
-                return value.lower() in ('true', '1', 'yes', 'on')
-
             # Build updated config from input values
             # Git
-            git_enabled = parse_bool(self._get_input_value("git_enabled"))
+            git_enabled = self._get_switch_value("git_enabled")
             git_refresh = int(self._get_input_value("git_refresh_interval"))
             git_commits = int(self._get_input_value("git_max_commits"))
-            git_show_staged = parse_bool(self._get_input_value("git_show_staged"))
-            git_show_modified = parse_bool(self._get_input_value("git_show_modified"))
-            git_show_untracked = parse_bool(self._get_input_value("git_show_untracked"))
+            git_show_staged = self._get_switch_value("git_show_staged")
+            git_show_modified = self._get_switch_value("git_show_modified")
+            git_show_untracked = self._get_switch_value("git_show_untracked")
 
             # System
-            system_enabled = parse_bool(self._get_input_value("system_enabled"))
+            system_enabled = self._get_switch_value("system_enabled")
             system_refresh = int(self._get_input_value("system_refresh_interval"))
-            system_show_cpu = parse_bool(self._get_input_value("system_show_cpu"))
-            system_show_ram = parse_bool(self._get_input_value("system_show_ram"))
-            system_show_disk = parse_bool(self._get_input_value("system_show_disk"))
-            system_show_uptime = parse_bool(self._get_input_value("system_show_uptime"))
-            system_show_load_avg = parse_bool(self._get_input_value("system_show_load_avg"))
+            system_show_cpu = self._get_switch_value("system_show_cpu")
+            system_show_ram = self._get_switch_value("system_show_ram")
+            system_show_disk = self._get_switch_value("system_show_disk")
+            system_show_uptime = self._get_switch_value("system_show_uptime")
+            system_show_load_avg = self._get_switch_value("system_show_load_avg")
             cpu_warning = float(self._get_input_value("system_cpu_warning"))
             cpu_critical = float(self._get_input_value("system_cpu_critical"))
             ram_warning = float(self._get_input_value("system_ram_warning"))
@@ -614,28 +619,28 @@ class ConfigEditorModal(ModalScreen):
             disk_warning = float(self._get_input_value("system_disk_warning"))
             disk_critical = float(self._get_input_value("system_disk_critical"))
             system_progress_width = int(self._get_input_value("system_progress_width"))
-            system_progress_style = self._get_input_value("system_progress_style")
+            system_progress_style = self._get_select_value("system_progress_style")
 
             # Tasks
-            tasks_enabled = parse_bool(self._get_input_value("tasks_enabled"))
+            tasks_enabled = self._get_switch_value("tasks_enabled")
             tasks_file = self._get_input_value("tasks_file_path")
-            tasks_sort = self._get_input_value("tasks_default_sort")
-            tasks_show_completed = parse_bool(self._get_input_value("tasks_show_completed"))
+            tasks_sort = self._get_select_value("tasks_default_sort")
+            tasks_show_completed = self._get_switch_value("tasks_show_completed")
             tasks_max = int(self._get_input_value("tasks_max_visible"))
             tasks_truncate = int(self._get_input_value("tasks_truncate_length"))
-            tasks_show_categories = parse_bool(self._get_input_value("tasks_show_categories"))
-            tasks_show_due_dates = parse_bool(self._get_input_value("tasks_show_due_dates"))
-            tasks_show_priority_emoji = parse_bool(self._get_input_value("tasks_show_priority_emoji"))
+            tasks_show_categories = self._get_switch_value("tasks_show_categories")
+            tasks_show_due_dates = self._get_switch_value("tasks_show_due_dates")
+            tasks_show_priority_emoji = self._get_switch_value("tasks_show_priority_emoji")
             tasks_due_soon_days = int(self._get_input_value("tasks_due_soon_days"))
-            tasks_export_format = self._get_input_value("tasks_export_format")
+            tasks_export_format = self._get_select_value("tasks_export_format")
 
             # Timer
-            timer_enabled = parse_bool(self._get_input_value("timer_enabled"))
+            timer_enabled = self._get_switch_value("timer_enabled")
             timer_focus = int(self._get_input_value("timer_focus_duration"))
             timer_break = int(self._get_input_value("timer_break_duration"))
             timer_long_break = int(self._get_input_value("timer_long_break_duration"))
-            timer_auto_start_break = parse_bool(self._get_input_value("timer_auto_start_break"))
-            timer_show_progress_bar = parse_bool(self._get_input_value("timer_show_progress_bar"))
+            timer_auto_start_break = self._get_switch_value("timer_auto_start_break")
+            timer_show_progress_bar = self._get_switch_value("timer_show_progress_bar")
             timer_progress = int(self._get_input_value("timer_progress_width"))
 
             # Validate values
@@ -671,7 +676,7 @@ class ConfigEditorModal(ModalScreen):
                 errors.append("Max visible tasks must be >= 1")
             if tasks_sort not in ["created", "priority", "due_date", "text"]:
                 errors.append("Invalid sort option")
-            if tasks_export_format not in ["grouped", "flat", "category"]:
+            if tasks_export_format not in ["grouped", "simple", "detailed"]:
                 errors.append("Invalid export format")
 
             if timer_focus < 1:
